@@ -38,4 +38,9 @@ public class EmpresaController {
     public ResponseEntity<String> delete(@PathVariable UUID uuid) {
         return this.empresaService.delete(uuid);
     }
+
+    @PutMapping("/{uuid}")
+    public ResponseEntity<EmpresaDTO> editar(@PathVariable UUID uuid, @RequestBody Empresa empresa) {
+        return this.empresaService.editar(uuid, empresa);
+    }
 }

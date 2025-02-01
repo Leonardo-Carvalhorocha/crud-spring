@@ -9,7 +9,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
-import java.lang.reflect.InvocationTargetException;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
@@ -24,32 +23,17 @@ public class EmpresaService {
     public EmpresaDTO create(Empresa empresa) {
         Empresa empresaSalva = empresaRepository.save(empresa);
 
-        EmpresaDTO empresaDTO = new EmpresaDTO(
-                empresaSalva.getNome(),
-                empresaSalva.getCnpj(),
-                empresaSalva.getEndereco(),
-                empresaSalva.getTelefone(),
-                empresaSalva.getEmail(),
-                empresaSalva.getUuid()
-        );
+        EmpresaDTO empresaDTO = this.trasnformEmpresaDTO(empresaSalva.getUuid());
 
         return empresaDTO;
     }
 
 
     public List<EmpresaDTO> getAll() {
-        // coverte cada empresa em empresaDTO e retorna uma lista
         List<EmpresaDTO> empresas = this.empresaRepository.findAll()
                                     .stream()
-                                    .map(empresa -> new EmpresaDTO(
-                                            empresa.getNome(),
-                                            empresa.getCnpj(),
-                                            empresa.getEndereco(),
-                                            empresa.getTelefone(),
-                                            empresa.getEmail(),
-                                            empresa.getUuid()
-                                    )).collect(Collectors.toList());
-            System.out.println(empresas);
+                                    .map(empresa -> this.trasnformEmpresaDTO(empresa.getUuid()))
+                                    .collect(Collectors.toList());
         return empresas;
     }
 
@@ -81,6 +65,44 @@ public class EmpresaService {
         } else {
             throw new EntityNotFoundException("Empresa não encontrada com UUID: " + uuid);
         }
+    }
+
+    public ResponseEntity<EmpresaDTO> editar (UUID uuid, Empresa empresaEditada) {
+        Optional<Empresa> empresaExistente = empresaRepository.findById(uuid);
+
+        if(empresaExistente.isPresent()) {
+            empresaExistente.get().setTelefone(empresaEditada.getTelefone());
+            empresaExistente.get().setPassword(empresaEditada.getPassword());
+            empresaExistente.get().setCnpj(empresaEditada.getCnpj());
+            empresaExistente.get().setNome(empresaEditada.getNome());
+            empresaExistente.get().setEmail(empresaEditada.getEmail());
+            empresaExistente.get().setEndereco(empresaEditada.getEndereco());
+
+            this.empresaRepository.save(empresaExistente.get());
+
+            return ResponseEntity.ok(this.trasnformEmpresaDTO(empresaExistente.get().getUuid()));
+        } else {
+            return ResponseEntity.ok(new EmpresaDTO());
+        }
+    }
+
+    public EmpresaDTO trasnformEmpresaDTO(UUID uuid) {
+        Optional<Empresa> empresaOptional = empresaRepository.findById(uuid);
+        EmpresaDTO empresaDTO = new EmpresaDTO();
+
+        if(empresaOptional.isPresent()) {
+            empresaDTO.setUuid(empresaOptional.get().getUuid());
+            empresaDTO.setCnpj(empresaOptional.get().getCnpj());
+            empresaDTO.setNome(empresaOptional.get().getNome());
+            empresaDTO.setTelefone(empresaOptional.get().getTelefone());
+            empresaDTO.setEndereco(empresaOptional.get().getEndereco());
+            empresaDTO.setEmail(empresaOptional.get().getEmail());
+
+            return empresaDTO;
+        } else {
+            return empresaDTO;
+        }
+
     }
 
 }

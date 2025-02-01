@@ -15,6 +15,8 @@ public class EmpresaDTO {
     private String telefone;
     private String email;
 
+    public EmpresaDTO(){};
+
     public EmpresaDTO(String nome, String cnpj, String endereco, String telefone, String email, UUID uuid) {
         this.nome = nome;
         this.cnpj = cnpj;
