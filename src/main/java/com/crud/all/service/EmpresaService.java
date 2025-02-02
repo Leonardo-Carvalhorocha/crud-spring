@@ -1,12 +1,15 @@
 package com.crud.all.service;
 
 import com.crud.all.dto.EmpresaDTO;
+import com.crud.all.dto.ResponseDTO;
 import com.crud.all.entities.Empresa;
+import com.crud.all.infra.security.TokenService;
 import com.crud.all.repository.EmpresaRepository;
 import jakarta.persistence.EntityNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -20,21 +23,29 @@ public class EmpresaService {
     @Autowired
     EmpresaRepository empresaRepository;
 
-    public EmpresaDTO create(Empresa empresa) {
+    @Autowired
+    TokenService tokenService;
+
+    @Autowired
+    PasswordEncoder passwordEncoder;
+
+    public ResponseEntity create(Empresa empresa) {
+        empresa.setPassword(this.passwordEncoder.encode(empresa.getPassword()));
         Empresa empresaSalva = empresaRepository.save(empresa);
 
         EmpresaDTO empresaDTO = this.trasnformEmpresaDTO(empresaSalva.getUuid());
-
-        return empresaDTO;
+        String token = this.tokenService.generateToken(empresaSalva);
+        return ResponseEntity.ok(new ResponseDTO(empresaDTO.getNome(), token));
+//        return ResponseEntity.status(HttpStatus.CREATED).body(empresaDTO);
     }
 
 
-    public List<EmpresaDTO> getAll() {
+    public ResponseEntity<List<EmpresaDTO>> getAll() {
         List<EmpresaDTO> empresas = this.empresaRepository.findAll()
                                     .stream()
                                     .map(empresa -> this.trasnformEmpresaDTO(empresa.getUuid()))
                                     .collect(Collectors.toList());
-        return empresas;
+        return ResponseEntity.status(HttpStatus.OK).body(empresas);
     }
 
     public ResponseEntity<EmpresaDTO> getByUuid(UUID uuid) {
@@ -48,7 +59,8 @@ public class EmpresaService {
                     empresa.getEndereco(),
                     empresa.getTelefone(),
                     empresa.getEmail(),
-                    empresa.getUuid()
+                    empresa.getUuid(),
+                    empresa.getUsername()
             );
             return ResponseEntity.ok(empresaDTO);
         } else {
@@ -68,7 +80,7 @@ public class EmpresaService {
     }
 
     public ResponseEntity<EmpresaDTO> editar (UUID uuid, Empresa empresaEditada) {
-        Optional<Empresa> empresaExistente = empresaRepository.findById(uuid);
+        Optional<Empresa> empresaExistente = this.empresaRepository.findById(uuid);
 
         if(empresaExistente.isPresent()) {
             empresaExistente.get().setTelefone(empresaEditada.getTelefone());
@@ -87,7 +99,7 @@ public class EmpresaService {
     }
 
     public EmpresaDTO trasnformEmpresaDTO(UUID uuid) {
-        Optional<Empresa> empresaOptional = empresaRepository.findById(uuid);
+        Optional<Empresa> empresaOptional = this.empresaRepository.findById(uuid);
         EmpresaDTO empresaDTO = new EmpresaDTO();
 
         if(empresaOptional.isPresent()) {
@@ -103,6 +115,15 @@ public class EmpresaService {
             return empresaDTO;
         }
 
+    }
+
+    public Optional<Empresa> empresaByEmail(String email) {
+        Optional<Empresa> empresa = this.empresaRepository.findByEmail(email);
+
+        if(empresa.isPresent()) {
+            return empresa;
+        }
+        return Optional.of(new Empresa());
     }
 
 }

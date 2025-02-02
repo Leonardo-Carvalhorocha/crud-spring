@@ -14,15 +14,17 @@ public class EmpresaDTO {
     private String endereco;
     private String telefone;
     private String email;
+    private String username;
 
     public EmpresaDTO(){};
 
-    public EmpresaDTO(String nome, String cnpj, String endereco, String telefone, String email, UUID uuid) {
+    public EmpresaDTO(String nome, String cnpj, String endereco, String telefone, String email, UUID uuid, String username) {
         this.nome = nome;
         this.cnpj = cnpj;
         this.endereco = endereco;
         this.telefone = telefone;
         this.email = email;
         this.uuid = uuid;
+        this.username = username;
     }
 }

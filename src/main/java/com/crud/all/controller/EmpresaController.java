@@ -12,7 +12,7 @@ import java.util.List;
 import java.util.UUID;
 
 @Controller
-@RequestMapping("api/empresa")
+@RequestMapping("api/empresas")
 public class EmpresaController {
 
     @Autowired
@@ -20,13 +20,12 @@ public class EmpresaController {
 
     @PostMapping()
     public ResponseEntity<EmpresaDTO> create(@RequestBody Empresa empresa) {
-        EmpresaDTO empresaDTO = empresaService.create(empresa);
-        return ResponseEntity.ok(empresaDTO);
+        return  empresaService.create(empresa);
     }
 
     @GetMapping()
     public ResponseEntity<List<EmpresaDTO>> getAll() {
-        return ResponseEntity.ok(this.empresaService.getAll());
+        return this.empresaService.getAll();
     }
 
     @GetMapping("/{uuid}")
