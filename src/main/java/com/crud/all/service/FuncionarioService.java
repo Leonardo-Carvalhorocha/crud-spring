@@ -10,6 +10,7 @@ import com.crud.all.repository.FuncionarioRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Repository;
 import org.springframework.stereotype.Service;
 
@@ -27,18 +28,21 @@ public class FuncionarioService {
     @Autowired
     EmpresaService empresaService;
 
+    @Autowired
+    PasswordEncoder passwordEncoder;
+
     public ResponseEntity<FuncionarioDTO> create(Funcionario funcionario) {
-
+        funcionario.setPassword(this.passwordEncoder.encode(funcionario.getPassword()));
         Funcionario funcionarioNovo = this.funcionarioRepository.save(funcionario);
+        EmpresaDTO empresaDTO = this.empresaService.trasnformEmpresaDTO(funcionario.getEmpresa().getUuid());
 
-        EmpresaDTO empresaDTO = this.empresaService.trasnformEmpresaDTO(funcionario.getUuid());
-
-        FuncionarioDTO funcionarioDTO = new FuncionarioDTO();
-        funcionarioDTO.setNome(funcionarioNovo.getNome());
-        funcionarioDTO.setUuid(funcionarioNovo.getUuid());
-        funcionarioDTO.setEmail(funcionarioNovo.getEmail());
-        funcionarioDTO.setRole(funcionarioNovo.getRole());
-        funcionarioDTO.setEmpresa(empresaDTO);
+        FuncionarioDTO funcionarioDTO = new FuncionarioDTO(
+                funcionarioNovo.getUuid(),
+                funcionarioNovo.getNome(),
+                funcionarioNovo.getEmail(),
+                funcionarioNovo.getRole(),
+                empresaDTO
+        );
 
         return ResponseEntity.status(HttpStatus.CREATED).body(funcionarioDTO);
     }
@@ -49,14 +53,16 @@ public class FuncionarioService {
 
         List<FuncionarioDTO> funcionariosDTO;
         if(funcionarios.size() > 0) {
-            funcionariosDTO = funcionarios.stream()
-                                          .map(funcionario -> new FuncionarioDTO(
+            funcionariosDTO = funcionarios
+                              .stream()
+                              .map(funcionario -> new FuncionarioDTO(
                                                                       funcionario.getUuid(),
                                                                       funcionario.getNome(),
                                                                       funcionario.getEmail(),
                                                                       funcionario.getRole(),
                                                                       empresa
                                                               )).collect(Collectors.toList());
+
             return ResponseEntity.status(HttpStatus.ACCEPTED).body(funcionariosDTO);
         } else {
             funcionariosDTO = List.of();
@@ -92,7 +98,6 @@ public class FuncionarioService {
             Funcionario funcionario = funcionarioExistente.get();
 
             funcionario.setEmpresa(funcionarioEditado.getEmpresa());
-            funcionario.setPassword(funcionarioEditado.getPassword()); // Corrigido para usar a senha editada
             funcionario.setEmail(funcionarioEditado.getEmail());
             funcionario.setRole(funcionarioEditado.getRole());
             funcionario.setNome(funcionarioEditado.getNome());

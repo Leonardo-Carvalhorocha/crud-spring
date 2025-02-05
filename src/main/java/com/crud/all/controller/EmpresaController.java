@@ -19,8 +19,8 @@ public class EmpresaController {
     EmpresaService empresaService;
 
     @PostMapping()
-    public ResponseEntity<EmpresaDTO> create(@RequestBody Empresa empresa) {
-        return  empresaService.create(empresa);
+    public ResponseEntity create(@RequestBody Empresa empresa) {
+        return this.empresaService.create(empresa);
     }
 
     @GetMapping()

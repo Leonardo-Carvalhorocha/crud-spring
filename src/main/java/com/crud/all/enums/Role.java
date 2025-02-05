@@ -1,9 +1,9 @@
 package com.crud.all.enums;
 
 public enum Role {
-    ADMIN_ROLE("administrador"),
-    MANAGER_ROLE("Gerente"),
-    EMPLOYEE_ROLE("Funcionario");
+        ADMIN_ROLE("administrador"),
+        MANAGER_ROLE("Gerente"),
+        EMPLOYEE_ROLE("Funcionario");
 
     private final String description;
 

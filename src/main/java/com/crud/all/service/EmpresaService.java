@@ -35,8 +35,7 @@ public class EmpresaService {
 
         EmpresaDTO empresaDTO = this.trasnformEmpresaDTO(empresaSalva.getUuid());
         String token = this.tokenService.generateToken(empresaSalva);
-        return ResponseEntity.ok(new ResponseDTO(empresaDTO.getNome(), token));
-//        return ResponseEntity.status(HttpStatus.CREATED).body(empresaDTO);
+        return ResponseEntity.ok(new ResponseDTO(token, empresaDTO));
     }
 
 
@@ -124,6 +123,15 @@ public class EmpresaService {
             return empresa;
         }
         return Optional.of(new Empresa());
+    }
+
+    public Optional<Empresa> empresaByUuid(UUID uuid) {
+        Optional<Empresa> empresa = this.empresaRepository.findById(uuid);
+        if(empresa.isPresent()) {
+            return empresa;
+        } else {
+            return Optional.of(new Empresa());
+        }
     }
 
 }

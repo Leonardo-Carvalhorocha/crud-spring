@@ -23,7 +23,6 @@ public class Empresa {
     @Column(nullable = false, unique = true, length = 100)
     private String nome;
 
-//    @Column(nullable = false, unique = true, length = 14)
     private String cnpj;
 
     @Column(nullable = false, length = 150)
@@ -32,14 +31,10 @@ public class Empresa {
     @Column(length = 15)
     private String telefone;
 
-//    @Column(unique = true, nullable = false)
     private String username;
 
     private String password;
 
     @Column(unique = true, nullable = false)
     private String email;
-
-//    @Column(nullable = false)
-//    private LocalDate dataFundacao;
 }

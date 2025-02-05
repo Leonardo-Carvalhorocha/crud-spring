@@ -19,7 +19,6 @@ public class TokenService {
     public String generateToken(Empresa user){
         try {
             Algorithm algorithm = Algorithm.HMAC256(secret);
-
             String token = JWT.create()
                     .withIssuer("crud-spring")
                     .withSubject(user.getEmail())
