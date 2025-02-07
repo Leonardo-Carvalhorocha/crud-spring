@@ -5,10 +5,12 @@ import com.crud.all.dto.LoginRequestDTO;
 import com.crud.all.dto.RegisterRequestDTO;
 import com.crud.all.dto.ResponseDTO;
 import com.crud.all.entities.Empresa;
+import com.crud.all.exceptions.InvalidTokenException;
 import com.crud.all.infra.security.TokenService;
 import com.crud.all.repository.EmpresaRepository;
 import com.crud.all.service.EmpresaService;
 import lombok.RequiredArgsConstructor;
+import org.antlr.v4.runtime.Token;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -52,6 +54,17 @@ public class AuthController {
         }
         return ResponseEntity.status(HttpStatus.OK).body("Já existe essa empresa cadastrada com esse email");
     }
+
+    @PostMapping("/validatetoken")
+    public ResponseEntity<?> validate(@RequestBody String token) {
+        try {
+            String tokenValido = this.tokenService.validateToken(token);
+            return ResponseEntity.ok().body("Token válido! Subject: " + tokenValido);
+        } catch (InvalidTokenException e) {
+            throw e;
+        }
+    }
+
 
 
 }
