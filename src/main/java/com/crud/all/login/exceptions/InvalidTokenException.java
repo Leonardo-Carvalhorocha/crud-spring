@@ -1,4 +1,4 @@
-package com.crud.all.exceptions;
+package com.crud.all.login.exceptions;
 
 public class InvalidTokenException extends RuntimeException{
     public InvalidTokenException(String message, Throwable cause) {

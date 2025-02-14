@@ -4,7 +4,7 @@ import com.crud.all.empresa.dto.EmpresaDTO;
 import com.crud.all.login.dto.LoginRequestDTO;
 import com.crud.all.empresa.dto.ResponseDTO;
 import com.crud.all.empresa.entity.Empresa;
-import com.crud.all.exceptions.InvalidTokenException;
+import com.crud.all.login.exceptions.InvalidTokenException;
 import com.crud.all.infra.security.TokenService;
 import com.crud.all.empresa.service.EmpresaService;
 import lombok.RequiredArgsConstructor;

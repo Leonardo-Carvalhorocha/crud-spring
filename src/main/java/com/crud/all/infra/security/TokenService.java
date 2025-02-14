@@ -6,7 +6,7 @@ import com.auth0.jwt.exceptions.JWTCreationException;
 import com.auth0.jwt.exceptions.JWTVerificationException;
 import com.auth0.jwt.exceptions.TokenExpiredException;
 import com.crud.all.empresa.entity.Empresa;
-import com.crud.all.exceptions.InvalidTokenException;
+import com.crud.all.login.exceptions.InvalidTokenException;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
