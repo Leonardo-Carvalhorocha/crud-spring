@@ -1,16 +1,13 @@
-package com.crud.all.controller;
+package com.crud.all.login.controller;
 
-import com.crud.all.dto.EmpresaDTO;
-import com.crud.all.dto.LoginRequestDTO;
-import com.crud.all.dto.RegisterRequestDTO;
-import com.crud.all.dto.ResponseDTO;
-import com.crud.all.entities.Empresa;
+import com.crud.all.empresa.dto.EmpresaDTO;
+import com.crud.all.login.dto.LoginRequestDTO;
+import com.crud.all.empresa.dto.ResponseDTO;
+import com.crud.all.empresa.entity.Empresa;
 import com.crud.all.exceptions.InvalidTokenException;
 import com.crud.all.infra.security.TokenService;
-import com.crud.all.repository.EmpresaRepository;
-import com.crud.all.service.EmpresaService;
+import com.crud.all.empresa.service.EmpresaService;
 import lombok.RequiredArgsConstructor;
-import org.antlr.v4.runtime.Token;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -34,7 +31,7 @@ public class AuthController {
 
         if(!empresa.isEmpty()) {
             Empresa empresaExiste = empresa.get();
-            EmpresaDTO empresaDTO = this.empresaService.trasnformEmpresaDTO(empresa.get().getUuid());
+            EmpresaDTO empresaDTO = this.empresaService.trasnformEmpresaDTO(empresaExiste.getUuid());
 
             if(passwordEncoder.matches(body.password(), empresaExiste.getPassword())){
                 String token = this.tokenService.generateToken(empresaExiste);

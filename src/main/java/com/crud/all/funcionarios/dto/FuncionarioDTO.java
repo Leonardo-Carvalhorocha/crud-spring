@@ -1,6 +1,7 @@
-package com.crud.all.dto;
+package com.crud.all.funcionarios.dto;
 
-import com.crud.all.enums.Role;
+import com.crud.all.empresa.dto.EmpresaDTO;
+import com.crud.all.funcionarios.enums.Role;
 import lombok.Data;
 
 import java.util.UUID;

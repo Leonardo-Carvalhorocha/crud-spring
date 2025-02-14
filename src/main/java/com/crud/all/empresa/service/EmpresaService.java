@@ -1,10 +1,10 @@
-package com.crud.all.service;
+package com.crud.all.empresa.service;
 
-import com.crud.all.dto.EmpresaDTO;
-import com.crud.all.dto.ResponseDTO;
-import com.crud.all.entities.Empresa;
+import com.crud.all.empresa.dto.EmpresaDTO;
+import com.crud.all.empresa.dto.ResponseDTO;
+import com.crud.all.empresa.entity.Empresa;
 import com.crud.all.infra.security.TokenService;
-import com.crud.all.repository.EmpresaRepository;
+import com.crud.all.empresa.resporitory.EmpresaRepository;
 import jakarta.persistence.EntityNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;

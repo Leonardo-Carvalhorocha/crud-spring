@@ -1,6 +1,6 @@
-package com.crud.all.repository;
+package com.crud.all.empresa.resporitory;
 
-import com.crud.all.entities.Empresa;
+import com.crud.all.empresa.entity.Empresa;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 

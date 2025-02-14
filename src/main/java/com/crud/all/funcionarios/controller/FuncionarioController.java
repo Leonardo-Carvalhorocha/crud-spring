@@ -1,8 +1,8 @@
-package com.crud.all.controller;
+package com.crud.all.funcionarios.controller;
 
-import com.crud.all.dto.FuncionarioDTO;
-import com.crud.all.entities.Funcionario;
-import com.crud.all.service.FuncionarioService;
+import com.crud.all.funcionarios.dto.FuncionarioDTO;
+import com.crud.all.funcionarios.entity.Funcionario;
+import com.crud.all.funcionarios.service.FuncionarioService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;

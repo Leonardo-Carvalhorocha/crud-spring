@@ -1,17 +1,15 @@
-package com.crud.all.service;
+package com.crud.all.funcionarios.service;
 
 
-import com.crud.all.dto.EmpresaDTO;
-import com.crud.all.dto.FuncionarioDTO;
-import com.crud.all.entities.Empresa;
-import com.crud.all.entities.Funcionario;
-import com.crud.all.enums.Role;
-import com.crud.all.repository.FuncionarioRepository;
+import com.crud.all.empresa.dto.EmpresaDTO;
+import com.crud.all.funcionarios.dto.FuncionarioDTO;
+import com.crud.all.funcionarios.entity.Funcionario;
+import com.crud.all.funcionarios.respository.FuncionarioRepository;
+import com.crud.all.empresa.service.EmpresaService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.stereotype.Repository;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -52,7 +50,7 @@ public class FuncionarioService {
         EmpresaDTO empresa = this.empresaService.trasnformEmpresaDTO(uuidEmpresa);
 
         List<FuncionarioDTO> funcionariosDTO;
-        if(funcionarios.size() > 0) {
+        if(!funcionarios.isEmpty()) {
             funcionariosDTO = funcionarios
                               .stream()
                               .map(funcionario -> new FuncionarioDTO(

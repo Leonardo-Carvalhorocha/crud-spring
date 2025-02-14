@@ -1,7 +1,7 @@
-package com.crud.all.entities;
+package com.crud.all.funcionarios.entity;
 
-import com.crud.all.dto.EmpresaDTO;
-import com.crud.all.enums.Role;
+import com.crud.all.funcionarios.enums.Role;
+import com.crud.all.empresa.entity.Empresa;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;

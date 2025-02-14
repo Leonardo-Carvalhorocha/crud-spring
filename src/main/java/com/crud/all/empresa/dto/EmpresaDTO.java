@@ -1,4 +1,4 @@
-package com.crud.all.dto;
+package com.crud.all.empresa.dto;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.Data;

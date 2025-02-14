@@ -1,8 +1,8 @@
-package com.crud.all.controller;
+package com.crud.all.empresa.controller;
 
-import com.crud.all.dto.EmpresaDTO;
-import com.crud.all.entities.Empresa;
-import com.crud.all.service.EmpresaService;
+import com.crud.all.empresa.dto.EmpresaDTO;
+import com.crud.all.empresa.entity.Empresa;
+import com.crud.all.empresa.service.EmpresaService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;

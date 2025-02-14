@@ -1,8 +1,6 @@
-package com.crud.all.repository;
+package com.crud.all.funcionarios.respository;
 
-import com.crud.all.dto.FuncionarioDTO;
-import com.crud.all.entities.Empresa;
-import com.crud.all.entities.Funcionario;
+import com.crud.all.funcionarios.entity.Funcionario;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 

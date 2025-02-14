@@ -1,4 +1,4 @@
-package com.crud.all.enums;
+package com.crud.all.funcionarios.enums;
 
 public enum Role {
         ADMIN_ROLE("administrador"),
