@@ -29,25 +29,25 @@ public class EmpresaService {
     @Autowired
     PasswordEncoder passwordEncoder;
 
-    public ResponseEntity create(Empresa empresa) {
+    public ResponseDTO create(Empresa empresa) {
         empresa.setPassword(this.passwordEncoder.encode(empresa.getPassword()));
         Empresa empresaSalva = empresaRepository.save(empresa);
 
         EmpresaDTO empresaDTO = this.trasnformEmpresaDTO(empresaSalva.getUuid());
         String token = this.tokenService.generateToken(empresaSalva);
-        return ResponseEntity.ok(new ResponseDTO(token, empresaDTO));
+        return new ResponseDTO(token, empresaDTO, "Empresa criado com sucesso");
     }
 
 
-    public ResponseEntity<List<EmpresaDTO>> getAll() {
+    public List<EmpresaDTO> getAll() {
         List<EmpresaDTO> empresas = this.empresaRepository.findAll()
                                     .stream()
                                     .map(empresa -> this.trasnformEmpresaDTO(empresa.getUuid()))
                                     .collect(Collectors.toList());
-        return ResponseEntity.status(HttpStatus.OK).body(empresas);
+        return empresas;
     }
 
-    public ResponseEntity<EmpresaDTO> getByUuid(UUID uuid) {
+    public EmpresaDTO getByUuid(UUID uuid) {
         Optional<Empresa> empresaOptional = empresaRepository.findById(uuid);
 
         if (empresaOptional.isPresent()) {
@@ -61,24 +61,24 @@ public class EmpresaService {
                     empresa.getUuid(),
                     empresa.getUsername()
             );
-            return ResponseEntity.ok(empresaDTO);
+            return empresaDTO;
         } else {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
+            return null;
         }
     }
 
-    public ResponseEntity<String> delete(UUID uuid) {
+    public String delete(UUID uuid) {
         Optional<Empresa> empresaOptional = empresaRepository.findById(uuid);
 
         if (empresaOptional.isPresent()) {
            this.empresaRepository.deleteById(uuid);
-           return ResponseEntity.ok("Empresa deletada com sucesso!");
+           return "Empresa deletada com sucesso!";
         } else {
             throw new EntityNotFoundException("Empresa não encontrada com UUID: " + uuid);
         }
     }
 
-    public ResponseEntity<EmpresaDTO> editar (UUID uuid, Empresa empresaEditada) {
+    public EmpresaDTO editar (UUID uuid, Empresa empresaEditada) {
         Optional<Empresa> empresaExistente = this.empresaRepository.findById(uuid);
 
         if(empresaExistente.isPresent()) {
@@ -91,9 +91,9 @@ public class EmpresaService {
 
             this.empresaRepository.save(empresaExistente.get());
 
-            return ResponseEntity.ok(this.trasnformEmpresaDTO(empresaExistente.get().getUuid()));
+            return this.trasnformEmpresaDTO(empresaExistente.get().getUuid());
         } else {
-            return ResponseEntity.ok(new EmpresaDTO());
+            return new EmpresaDTO();
         }
     }
 
@@ -108,6 +108,7 @@ public class EmpresaService {
             empresaDTO.setTelefone(empresaOptional.get().getTelefone());
             empresaDTO.setEndereco(empresaOptional.get().getEndereco());
             empresaDTO.setEmail(empresaOptional.get().getEmail());
+            empresaDTO.setUsername(empresaOptional.get().getUsername());
 
             return empresaDTO;
         } else {
@@ -119,7 +120,7 @@ public class EmpresaService {
     public Optional<Empresa> empresaByEmail(String email) {
         Optional<Empresa> empresa = this.empresaRepository.findByEmail(email);
 
-        if(empresa.isPresent()) {
+        if(empresa.isEmpty()) {
             return empresa;
         }
         return Optional.of(new Empresa());

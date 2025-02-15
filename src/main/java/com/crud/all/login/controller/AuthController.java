@@ -35,7 +35,7 @@ public class AuthController {
 
             if(passwordEncoder.matches(body.password(), empresaExiste.getPassword())){
                 String token = this.tokenService.generateToken(empresaExiste);
-                return ResponseEntity.ok(new ResponseDTO(token, empresaDTO));
+                return ResponseEntity.ok(new ResponseDTO(token, empresaDTO, "Login realizado com sucesso!"));
             }
         }
         return ResponseEntity.badRequest().build();
@@ -47,7 +47,8 @@ public class AuthController {
         Optional<Empresa> empresa = this.empresaService.empresaByEmail(body.getEmail());
 
         if(empresa.isEmpty()) {
-            return this.empresaService.create(body);
+            ResponseDTO responseDTO = this.empresaService.create(body);
+            return ResponseEntity.status(HttpStatus.OK).body(responseDTO);
         }
         return ResponseEntity.status(HttpStatus.OK).body("Já existe essa empresa cadastrada com esse email");
     }

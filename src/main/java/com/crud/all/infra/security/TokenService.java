@@ -32,7 +32,7 @@ public class TokenService {
         }
     }
 
-    public String validateToken(String token) {
+    public String validateToken(String token){
         try {
             Algorithm algorithm = Algorithm.HMAC256(secret);
             return JWT.require(algorithm)
@@ -40,10 +40,8 @@ public class TokenService {
                     .build()
                     .verify(token)
                     .getSubject();
-        } catch (TokenExpiredException e) {
-            throw new InvalidTokenException("Token expirado", e);
-        } catch (JWTVerificationException e) {
-            throw new InvalidTokenException("Token inválido", e);
+        } catch (JWTVerificationException exception) {
+            return null;
         }
     }
 

@@ -29,7 +29,7 @@ public class FuncionarioService {
     @Autowired
     PasswordEncoder passwordEncoder;
 
-    public ResponseEntity<FuncionarioDTO> create(Funcionario funcionario) {
+    public FuncionarioDTO create(Funcionario funcionario) {
         funcionario.setPassword(this.passwordEncoder.encode(funcionario.getPassword()));
         Funcionario funcionarioNovo = this.funcionarioRepository.save(funcionario);
         EmpresaDTO empresaDTO = this.empresaService.trasnformEmpresaDTO(funcionario.getEmpresa().getUuid());
@@ -42,10 +42,10 @@ public class FuncionarioService {
                 empresaDTO
         );
 
-        return ResponseEntity.status(HttpStatus.CREATED).body(funcionarioDTO);
+        return funcionarioDTO;
     }
 
-    public ResponseEntity<List<FuncionarioDTO>> filter(UUID uuidEmpresa) {
+    public List<FuncionarioDTO> filter(UUID uuidEmpresa) {
         List<Funcionario> funcionarios = this.funcionarioRepository.findByEmpresa_Uuid(uuidEmpresa);
         EmpresaDTO empresa = this.empresaService.trasnformEmpresaDTO(uuidEmpresa);
 
@@ -61,35 +61,34 @@ public class FuncionarioService {
                                                                       empresa
                                                               )).collect(Collectors.toList());
 
-            return ResponseEntity.status(HttpStatus.ACCEPTED).body(funcionariosDTO);
+            return funcionariosDTO;
         } else {
             funcionariosDTO = List.of();
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(funcionariosDTO);
+            return funcionariosDTO;
         }
     }
 
-    public ResponseEntity<String> delete(UUID uuid) {
+    public String delete(UUID uuid) {
         Optional<Funcionario> funcionario = this.funcionarioRepository.findById(uuid);
 
         if(funcionario.isPresent()) {
             this.funcionarioRepository.delete(funcionario.get());
-            return ResponseEntity.status(HttpStatus.ACCEPTED).body("Deletado com sucesso!");
-        } else {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Funcionario não encotrado");
+            return"Deletado com sucesso!";
         }
+            return "Funcionario não encotrado";
     }
 
-    public ResponseEntity<FuncionarioDTO> getByUuid(UUID uuid) {
+    public FuncionarioDTO getByUuid(UUID uuid) {
         Optional<Funcionario> funcionario = this.funcionarioRepository.findById(uuid);
 
         if(funcionario.isPresent()) {
-            return ResponseEntity.status(HttpStatus.ACCEPTED).body(this.transformFuncionarioDTO(funcionario.get()));
+            return this.transformFuncionarioDTO(funcionario.get());
         } else {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(new FuncionarioDTO());
+            return new FuncionarioDTO();
         }
     }
 
-    public ResponseEntity<FuncionarioDTO> editar(UUID uuid, Funcionario funcionarioEditado) {
+    public FuncionarioDTO editar(UUID uuid, Funcionario funcionarioEditado) {
         Optional<Funcionario> funcionarioExistente = this.funcionarioRepository.findById(uuid);
 
         if(funcionarioExistente.isPresent()) {
@@ -102,9 +101,9 @@ public class FuncionarioService {
 
             Funcionario funcionarioSalvo = this.funcionarioRepository.save(funcionario);
 
-            return ResponseEntity.status(HttpStatus.ACCEPTED).body(this.transformFuncionarioDTO(funcionarioSalvo));
+            return this.transformFuncionarioDTO(funcionarioSalvo);
         } else {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(new FuncionarioDTO());
+            return new FuncionarioDTO();
         }
     }
 
