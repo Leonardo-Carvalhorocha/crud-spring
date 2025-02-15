@@ -120,7 +120,7 @@ public class EmpresaService {
     public Optional<Empresa> empresaByEmail(String email) {
         Optional<Empresa> empresa = this.empresaRepository.findByEmail(email);
 
-        if(empresa.isEmpty()) {
+        if(empresa.isPresent()) {
             return empresa;
         }
         return Optional.of(new Empresa());
