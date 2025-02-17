@@ -4,6 +4,12 @@ import com.crud.all.empresa.dto.EmpresaDTO;
 import com.crud.all.empresa.dto.ResponseDTO;
 import com.crud.all.empresa.entity.Empresa;
 import com.crud.all.empresa.service.EmpresaService;
+import com.crud.all.infra.security.SecurityConfig;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -15,11 +21,19 @@ import java.util.UUID;
 
 @Controller
 @RequestMapping("api/empresas")
+@Tag(name = "Empresa", description = "Controller de empresa")
+@SecurityRequirement(name = SecurityConfig.SECURITY)
 public class EmpresaController {
 
     @Autowired
     EmpresaService empresaService;
 
+    @Operation(summary = "Criar empresa")
+    @ApiResponses({
+            @ApiResponse(responseCode = "200", description = "Empresa criada com sucesso"),
+            @ApiResponse(responseCode = "400", description = "Requisção inválida"),
+            @ApiResponse(responseCode = "500", description = "Erro interno no servidor")
+    })
     @PostMapping()
     public ResponseEntity create(@RequestBody Empresa empresa) {
         try {
@@ -40,6 +54,12 @@ public class EmpresaController {
         }
     }
 
+    @Operation(summary = "Buscar empresa por UUID")
+    @ApiResponses({
+            @ApiResponse(responseCode = "200", description = "Empresa buscada com sucesso"),
+            @ApiResponse(responseCode = "400", description = "Requisção inválida"),
+            @ApiResponse(responseCode = "500", description = "Erro interno no servidor")
+    })
     @GetMapping("/{uuid}")
     public ResponseEntity<EmpresaDTO> get(@PathVariable UUID uuid) {
         try {
@@ -60,6 +80,12 @@ public class EmpresaController {
         }
     }
 
+    @Operation(summary = "Editar empresa")
+    @ApiResponses({
+            @ApiResponse(responseCode = "200", description = "Empresa editada com sucesso"),
+            @ApiResponse(responseCode = "400", description = "Requisção inválida"),
+            @ApiResponse(responseCode = "500", description = "Erro interno no servidor")
+    })
     @PutMapping("/{uuid}")
     public ResponseEntity<EmpresaDTO> editar(@PathVariable UUID uuid, @RequestBody Empresa empresa) {
         try {
