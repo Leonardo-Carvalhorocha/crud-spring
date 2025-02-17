@@ -1,6 +1,8 @@
 package com.crud.all.infra.security;
 
 
+import io.swagger.v3.oas.annotations.enums.SecuritySchemeType;
+import io.swagger.v3.oas.annotations.security.SecurityScheme;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -21,6 +23,7 @@ import java.util.List;
 
 @Configuration
 @EnableWebSecurity
+@SecurityScheme(name = SecurityConfig.SECURITY, type = SecuritySchemeType.HTTP, bearerFormat = "JWT", scheme = "bearer")
 public class SecurityConfig {
 
     @Autowired
@@ -29,15 +32,21 @@ public class SecurityConfig {
     @Autowired
     SecurityFilter securityFilter;
 
+    public static final String SECURITY = "bearerAuth";
+
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
-                // Configurações de CORS
                 .cors(cors -> cors.configurationSource(corsConfigurationSource()))
                 .csrf(csrf -> csrf.disable())
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authorizeHttpRequests(authorize -> authorize
-                        .requestMatchers("/api/auth/login", "/api/auth/register", "/api/auth/validatetoken").permitAll()
+                        .requestMatchers("/api/auth/login", "/api/auth/register", "/api/auth/validatetoken",
+                                "/swagger-ui.html",
+                                "/swagger-ui/*",
+                                "/v3/api-docs/**",
+                                "/swagger-resources/**")
+                        .permitAll()
                         .anyRequest().authenticated()
                 )
                 .addFilterBefore(securityFilter, UsernamePasswordAuthenticationFilter.class);
