@@ -49,12 +49,8 @@ public class ClienteController {
     })
     @GetMapping("/{uuidEmpresa}")
     public ResponseEntity<List<ClienteDTO>> getAll(@PathVariable UUID uuidEmpresa) {
-        try {
-            List<ClienteDTO> clienteDTOS = this.clienteService.getClientesPerEmpresa(uuidEmpresa);
-            return  ResponseEntity.status(HttpStatus.OK).body(clienteDTOS);
-        } catch (RuntimeException e) {
-            throw new RuntimeException(e);
-        }
+        List<ClienteDTO> clienteDTOS = this.clienteService.getClientesPerEmpresa(uuidEmpresa);
+        return  ResponseEntity.status(HttpStatus.OK).body(clienteDTOS);
     }
 
     @Operation(summary = "Atualizar um cliente")

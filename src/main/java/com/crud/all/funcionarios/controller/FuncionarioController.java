@@ -44,7 +44,7 @@ public class FuncionarioController {
         }
     }
 
-    @Operation(summary = "Buscar todos os funcionários por empresa")
+    @Operation(summary = "Lista todos os funcionarios por empresa")
     @ApiResponses({
             @ApiResponse(responseCode = "200", description = "funcionários"),
             @ApiResponse(responseCode = "400", description = "Requisção inválida"),

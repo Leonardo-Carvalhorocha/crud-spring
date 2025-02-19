@@ -2,13 +2,18 @@ package com.crud.all.clientes.service;
 
 import com.crud.all.clientes.dto.ClienteDTO;
 import com.crud.all.clientes.entities.Cliente;
+import com.crud.all.clientes.exceptions.ClienteJaExisteException;
 import com.crud.all.clientes.exceptions.ClienteNotFoundException;
+import com.crud.all.clientes.exceptions.EmailInvalidoException;
+import com.crud.all.clientes.exceptions.ValidacaoException;
 import com.crud.all.empresa.dto.EmpresaDTO;
 import com.crud.all.empresa.service.EmpresaService;
 import com.crud.all.infra.security.TokenService;
 import com.crud.all.clientes.repository.ClienteRepository;
 import com.crud.all.response.GenericResponse;
+import com.crud.all.utils.EmailValidator;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -34,9 +39,23 @@ public class ClienteService {
 
 
     public ClienteDTO create(Cliente cliente) {
+       if(clienteRepository.existsByEmail(cliente.getEmail())) {
+            throw new ClienteJaExisteException("Já existe cliente cadastrado com este email");
+       }
+
+        if (cliente.getEmpresa() == null || cliente.getEmpresa().getUuid() == null) {
+            throw new ValidacaoException("Empresa associada ao cliente é inválida.");
+        }
+
+        if(!EmailValidator.isValid(cliente.getEmail())) {
+            throw new EmailInvalidoException("O email informado é inválido");
+        }
+
         cliente.setPassword(passwordEncoder.encode(cliente.getPassword()));
+
         Cliente clienteNovo = clienteRepository.save(cliente);
         EmpresaDTO empresaDTO = empresaService.trasnformEmpresaDTO(clienteNovo.getEmpresa().getUuid());
+
         return new ClienteDTO(
                 clienteNovo.getUuid(),
                 clienteNovo.getNome(),
@@ -74,7 +93,27 @@ public class ClienteService {
 
 
     public Cliente editar(UUID uuid, Cliente clienteEditado) {
+
+        if (uuid == null) {
+            throw new IllegalArgumentException("UUID não pode ser nulo.");
+        }
+
+        if (clienteEditado == null) {
+            throw new ValidacaoException("Os dados do cliente a serem editados não podem ser nulos.");
+        }
         Cliente clienteAntigo = this.getClienteByUuid(uuid);
+
+        if (clienteAntigo == null) {
+            throw new ClienteNotFoundException("Cliente não encontrado.");
+        }
+
+        if (clienteEditado.getEmail() == null || clienteEditado.getEmail().trim().isEmpty()) {
+            throw new ValidacaoException("O e-mail do cliente é obrigatório.");
+        }
+
+        if(!EmailValidator.isValid(clienteEditado.getEmail())) {
+            throw new EmailInvalidoException("O email informado é inválido");
+        }
 
         clienteAntigo.setContato(clienteEditado.getContato());
         clienteAntigo.setPassword(clienteEditado.getPassword());
@@ -86,8 +125,12 @@ public class ClienteService {
 
     public String delete(UUID uuid) {
         Cliente cliente = this.getClienteByUuid(uuid);
+        if (cliente == null) {
+            throw new ClienteNotFoundException("Cliente não encontrado.");
+        }
+
         this.clienteRepository.delete(cliente);
-        return"Deletado com sucesso!";
+        return "Deletado com sucesso!";
     }
 
     public Cliente getClienteByUuid(UUID uuid) {
