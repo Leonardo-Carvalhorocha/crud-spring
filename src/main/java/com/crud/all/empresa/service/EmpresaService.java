@@ -86,8 +86,7 @@ public class EmpresaService {
     }
 
     public String delete(UUID uuid) {
-        Optional<Empresa> empresaOptional = empresaRepository.findById(uuid)
-                ;
+        Optional<Empresa> empresaOptional = empresaRepository.findById(uuid);
         if(empresaOptional.get() == null) {
             throw new EmpresaNotFoundException("Empresa não existe com o uuid: " + uuid);
         }
@@ -107,20 +106,16 @@ public class EmpresaService {
             throw new EmpresaNotFoundException("Empresa não existe com o uuid: " + uuid);
         }
 
-        if(empresaExistente.isPresent()) {
-            empresaExistente.get().setTelefone(empresaEditada.getTelefone());
-            empresaExistente.get().setPassword(empresaEditada.getPassword());
-            empresaExistente.get().setCnpj(empresaEditada.getCnpj());
-            empresaExistente.get().setNome(empresaEditada.getNome());
-            empresaExistente.get().setEmail(empresaEditada.getEmail());
-            empresaExistente.get().setEndereco(empresaEditada.getEndereco());
+        empresaExistente.get().setTelefone(empresaEditada.getTelefone());
+        empresaExistente.get().setPassword(empresaEditada.getPassword());
+        empresaExistente.get().setCnpj(empresaEditada.getCnpj());
+        empresaExistente.get().setNome(empresaEditada.getNome());
+        empresaExistente.get().setEmail(empresaEditada.getEmail());
+        empresaExistente.get().setEndereco(empresaEditada.getEndereco());
 
-            this.empresaRepository.save(empresaExistente.get());
+        this.empresaRepository.save(empresaExistente.get());
 
-            return this.trasnformEmpresaDTO(empresaExistente.get().getUuid());
-        } else {
-            return new EmpresaDTO();
-        }
+        return this.trasnformEmpresaDTO(empresaExistente.get().getUuid());
     }
 
     public EmpresaDTO trasnformEmpresaDTO(UUID uuid) {

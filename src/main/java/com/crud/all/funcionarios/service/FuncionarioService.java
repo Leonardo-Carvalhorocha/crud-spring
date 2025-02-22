@@ -4,6 +4,7 @@ package com.crud.all.funcionarios.service;
 import com.crud.all.empresa.dto.EmpresaDTO;
 import com.crud.all.funcionarios.dto.FuncionarioDTO;
 import com.crud.all.funcionarios.entity.Funcionario;
+import com.crud.all.funcionarios.exceptions.FuncionarioCampoObrigatorioException;
 import com.crud.all.funcionarios.respository.FuncionarioRepository;
 import com.crud.all.empresa.service.EmpresaService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -30,6 +31,13 @@ public class FuncionarioService {
     PasswordEncoder passwordEncoder;
 
     public FuncionarioDTO create(Funcionario funcionario) {
+        if(funcionario.getEmpresa() == null) throw new FuncionarioCampoObrigatorioException("Empresa é obrigatório");
+        if(funcionario.getRole() == null) throw new FuncionarioCampoObrigatorioException("Permissão é obrigatório");
+        if(funcionario.getNome() == null) throw new FuncionarioCampoObrigatorioException("Nome é obrigatório");
+        if(funcionario.getEmail() == null) throw new FuncionarioCampoObrigatorioException("Email é obrigatório");
+        if(funcionario.getPassword() == null) throw new FuncionarioCampoObrigatorioException("Senha é obrigatório");
+        if(funcionario.getPassword().length() < 8) throw new FuncionarioCampoObrigatorioException("Senha deve conter no mínimo 8 caracteres");
+
         funcionario.setPassword(this.passwordEncoder.encode(funcionario.getPassword()));
         Funcionario funcionarioNovo = this.funcionarioRepository.save(funcionario);
         EmpresaDTO empresaDTO = this.empresaService.trasnformEmpresaDTO(funcionario.getEmpresa().getUuid());
