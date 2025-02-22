@@ -3,12 +3,14 @@ package com.crud.all.empresa.service;
 import com.crud.all.empresa.dto.EmpresaDTO;
 import com.crud.all.empresa.dto.ResponseDTO;
 import com.crud.all.empresa.entity.Empresa;
+import com.crud.all.empresa.exceptions.EmailInvalidoEmpresaException;
+import com.crud.all.empresa.exceptions.EmpresaExistenteException;
+import com.crud.all.empresa.exceptions.EmpresaNotFoundException;
 import com.crud.all.infra.security.TokenService;
 import com.crud.all.empresa.resporitory.EmpresaRepository;
+import com.crud.all.utils.EmailValidator;
 import jakarta.persistence.EntityNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -30,6 +32,18 @@ public class EmpresaService {
     PasswordEncoder passwordEncoder;
 
     public ResponseDTO create(Empresa empresa) {
+        if(this.empresaRepository.cnpjExists(empresa.getCnpj())) {
+            throw new EmpresaExistenteException("Empresa com o CNPJ: " + empresa.getCnpj() + ", já foi cadastrada.");
+        }
+
+        if(this.empresaRepository.emailExists(empresa.getEmail())) {
+            throw new EmpresaExistenteException("Esse email já foi cadastrado, por favor, digite outro.");
+        }
+
+        if(!EmailValidator.isValid(empresa.getEmail())) {
+            throw new EmailInvalidoEmpresaException("O email informado é inválido");
+        }
+
         empresa.setPassword(this.passwordEncoder.encode(empresa.getPassword()));
         Empresa empresaSalva = empresaRepository.save(empresa);
 
@@ -50,6 +64,10 @@ public class EmpresaService {
     public EmpresaDTO getByUuid(UUID uuid) {
         Optional<Empresa> empresaOptional = empresaRepository.findById(uuid);
 
+        if(empresaOptional.get() == null) {
+            throw new EmpresaNotFoundException("Empresa não existe com o uuid: " + uuid);
+        }
+
         if (empresaOptional.isPresent()) {
             Empresa empresa = empresaOptional.get();
             EmpresaDTO empresaDTO = new EmpresaDTO(
@@ -68,7 +86,11 @@ public class EmpresaService {
     }
 
     public String delete(UUID uuid) {
-        Optional<Empresa> empresaOptional = empresaRepository.findById(uuid);
+        Optional<Empresa> empresaOptional = empresaRepository.findById(uuid)
+                ;
+        if(empresaOptional.get() == null) {
+            throw new EmpresaNotFoundException("Empresa não existe com o uuid: " + uuid);
+        }
 
         if (empresaOptional.isPresent()) {
            this.empresaRepository.deleteById(uuid);
@@ -80,6 +102,10 @@ public class EmpresaService {
 
     public EmpresaDTO editar (UUID uuid, Empresa empresaEditada) {
         Optional<Empresa> empresaExistente = this.empresaRepository.findById(uuid);
+
+        if(empresaExistente.get() == null) {
+            throw new EmpresaNotFoundException("Empresa não existe com o uuid: " + uuid);
+        }
 
         if(empresaExistente.isPresent()) {
             empresaExistente.get().setTelefone(empresaEditada.getTelefone());

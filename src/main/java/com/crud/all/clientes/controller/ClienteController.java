@@ -73,8 +73,7 @@ public class ClienteController {
     })
     @DeleteMapping("/{uuidCliente}")
     public ResponseEntity<String> delete(@PathVariable UUID uuidCliente) {
-        String message = this.clienteService.delete(uuidCliente);
-        return ResponseEntity.status(HttpStatus.OK).body(message);
+        return this.clienteService.delete(uuidCliente);
     }
 
 }

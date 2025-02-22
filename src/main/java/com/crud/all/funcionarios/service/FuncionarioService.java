@@ -53,13 +53,14 @@ public class FuncionarioService {
         if(!funcionarios.isEmpty()) {
             funcionariosDTO = funcionarios
                               .stream()
-                              .map(funcionario -> new FuncionarioDTO(
-                                                                      funcionario.getUuid(),
-                                                                      funcionario.getNome(),
-                                                                      funcionario.getEmail(),
-                                                                      funcionario.getRole(),
-                                                                      empresa
-                                                              )).collect(Collectors.toList());
+                              .map(funcionario ->
+                                      new FuncionarioDTO(
+                                              funcionario.getUuid(),
+                                              funcionario.getNome(),
+                                              funcionario.getEmail(),
+                                              funcionario.getRole(),
+                                              empresa
+                                      )).collect(Collectors.toList());
 
             return funcionariosDTO;
         } else {

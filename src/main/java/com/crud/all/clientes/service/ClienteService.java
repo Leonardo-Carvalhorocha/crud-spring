@@ -14,6 +14,8 @@ import com.crud.all.response.GenericResponse;
 import com.crud.all.utils.EmailValidator;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -39,7 +41,7 @@ public class ClienteService {
 
 
     public ClienteDTO create(Cliente cliente) {
-       if(clienteRepository.existsByEmail(cliente.getEmail())) {
+       if(this.clienteRepository.existsByEmail(cliente.getEmail())) {
             throw new ClienteJaExisteException("Já existe cliente cadastrado com este email");
        }
 
@@ -53,8 +55,8 @@ public class ClienteService {
 
         cliente.setPassword(passwordEncoder.encode(cliente.getPassword()));
 
-        Cliente clienteNovo = clienteRepository.save(cliente);
-        EmpresaDTO empresaDTO = empresaService.trasnformEmpresaDTO(clienteNovo.getEmpresa().getUuid());
+        Cliente clienteNovo = this.clienteRepository.save(cliente);
+        EmpresaDTO empresaDTO = this.empresaService.trasnformEmpresaDTO(clienteNovo.getEmpresa().getUuid());
 
         return new ClienteDTO(
                 clienteNovo.getUuid(),
@@ -123,14 +125,14 @@ public class ClienteService {
         return clienteAntigo;
     }
 
-    public String delete(UUID uuid) {
+    public ResponseEntity<String> delete(UUID uuid) {
         Cliente cliente = this.getClienteByUuid(uuid);
         if (cliente == null) {
             throw new ClienteNotFoundException("Cliente não encontrado.");
         }
 
         this.clienteRepository.delete(cliente);
-        return "Deletado com sucesso!";
+        return ResponseEntity.status(HttpStatus.OK).body("Deletado com sucesso!");
     }
 
     public Cliente getClienteByUuid(UUID uuid) {
