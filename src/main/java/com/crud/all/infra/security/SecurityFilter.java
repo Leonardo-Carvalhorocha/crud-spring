@@ -1,7 +1,7 @@
 package com.crud.all.infra.security;
 
-import com.crud.all.empresa.entity.Empresa;
-import com.crud.all.empresa.resporitory.EmpresaRepository;
+import com.crud.all.api.empresa.entity.Empresa;
+import com.crud.all.api.empresa.resporitory.EmpresaRepository;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;

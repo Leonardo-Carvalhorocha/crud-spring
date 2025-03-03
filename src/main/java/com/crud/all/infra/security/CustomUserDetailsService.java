@@ -1,7 +1,7 @@
 package com.crud.all.infra.security;
 
-import com.crud.all.empresa.entity.Empresa;
-import com.crud.all.empresa.resporitory.EmpresaRepository;
+import com.crud.all.api.empresa.entity.Empresa;
+import com.crud.all.api.empresa.resporitory.EmpresaRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
