@@ -11,6 +11,7 @@ import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -52,9 +53,9 @@ public class FuncionarioController {
             @ApiResponse(responseCode = "500", description = "Erro interno no servidor")
     })
     @GetMapping("/{uuidEmpresa}")
-    public ResponseEntity<List<FuncionarioDTO>> filter(@PathVariable UUID uuidEmpresa, Pageable pageable) {
+    public ResponseEntity<Page<FuncionarioDTO>> filter(@PathVariable UUID uuidEmpresa, Pageable pageable) {
         try {
-            List<FuncionarioDTO> funcionarioDTOS = this.funcionarioService.filter(uuidEmpresa, pageable);
+            Page<FuncionarioDTO> funcionarioDTOS = this.funcionarioService.filter(uuidEmpresa, pageable);
             return ResponseEntity.status(HttpStatus.OK).body(funcionarioDTOS);
         } catch (Exception e) {
             throw new RuntimeException(e);

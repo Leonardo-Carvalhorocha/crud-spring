@@ -68,21 +68,16 @@ public class EmpresaService {
             throw new EmpresaNotFoundException("Empresa não existe com o uuid: " + uuid);
         }
 
-        if (empresaOptional.isPresent()) {
-            Empresa empresa = empresaOptional.get();
-            EmpresaDTO empresaDTO = new EmpresaDTO(
-                    empresa.getNome(),
-                    empresa.getCnpj(),
-                    empresa.getEndereco(),
-                    empresa.getTelefone(),
-                    empresa.getEmail(),
-                    empresa.getUuid(),
-                    empresa.getUsername()
-            );
-            return empresaDTO;
-        } else {
-            return null;
-        }
+        Empresa empresa = empresaOptional.get();
+        return new EmpresaDTO(
+                empresa.getNome(),
+                empresa.getCnpj(),
+                empresa.getEndereco(),
+                empresa.getTelefone(),
+                empresa.getEmail(),
+                empresa.getUuid(),
+                empresa.getUsername()
+        );
     }
 
     public String delete(UUID uuid) {

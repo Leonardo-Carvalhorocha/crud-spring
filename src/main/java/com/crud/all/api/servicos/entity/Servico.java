@@ -1,6 +1,7 @@
 package com.crud.all.api.servicos.entity;
 
 import com.crud.all.api.empresa.entity.Empresa;
+import com.fasterxml.jackson.annotation.JsonFormat;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -24,6 +25,7 @@ public class Servico {
     @Column(nullable = false, length = 100)
     private String nome;
 
+    @JsonFormat(shape = JsonFormat.Shape.STRING)
     @Column(nullable = false)
     private Double preco;
 

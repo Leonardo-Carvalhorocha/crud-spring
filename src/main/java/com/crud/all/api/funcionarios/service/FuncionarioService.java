@@ -53,28 +53,24 @@ public class FuncionarioService {
         return funcionarioDTO;
     }
 
-    public List<FuncionarioDTO> filter(UUID uuidEmpresa, Pageable pageable) {
+    public Page<FuncionarioDTO> filter(UUID uuidEmpresa, Pageable pageable) {
         Page<Funcionario> funcionarios = this.funcionarioRepository.findByEmpresa_Uuid(uuidEmpresa, pageable);
         EmpresaDTO empresa = this.empresaService.trasnformEmpresaDTO(uuidEmpresa);
 
-        List<FuncionarioDTO> funcionariosDTO;
+        Page<FuncionarioDTO> funcionarioDTOPage = null;
         if(!funcionarios.isEmpty()) {
-            funcionariosDTO = funcionarios
-                              .getContent()
-                              .stream()
-                              .map(funcionario ->
+            funcionarioDTOPage = funcionarios.map(funcionario ->
                                       new FuncionarioDTO(
                                               funcionario.getUuid(),
                                               funcionario.getNome(),
                                               funcionario.getEmail(),
                                               funcionario.getRole(),
                                               empresa
-                                      )).collect(Collectors.toList());
+                                      ));
 
-            return funcionariosDTO;
+            return funcionarioDTOPage;
         } else {
-            funcionariosDTO = List.of();
-            return funcionariosDTO;
+            return funcionarioDTOPage;
         }
     }
 

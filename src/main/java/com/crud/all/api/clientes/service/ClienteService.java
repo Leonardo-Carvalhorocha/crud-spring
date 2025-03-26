@@ -66,7 +66,7 @@ public class ClienteService {
         );
     }
 
-    public List<ClienteDTO> pageable(UUID uuidEmpresa, Pageable pageable) {
+    public Page<ClienteDTO> pageable(UUID uuidEmpresa, Pageable pageable) {
         EmpresaDTO empresa = this.empresaService.trasnformEmpresaDTO(uuidEmpresa);
 
         if(empresa == null) {
@@ -75,21 +75,21 @@ public class ClienteService {
 
         Page<Cliente> clientes = this.clienteRepository.findByEmpresa_Uuid(uuidEmpresa, pageable);
         System.out.println(clientes);
-        List<ClienteDTO> clienteDTOS;
+        Page<ClienteDTO> clienteDTOPage;
         if(clientes.isEmpty()) {
             throw new ClienteNotFoundException("Não existem clientes desta empresa");
         }
 
-        clienteDTOS = clientes.getContent().stream().map(
+        clienteDTOPage = clientes.map(
                 cliente -> new ClienteDTO(
                         cliente.getUuid(),
                         cliente.getNome(),
                         cliente.getEmail(),
                         cliente.getContato(),
                         empresa
-                )).toList();
+                ));
 
-        return clienteDTOS;
+        return clienteDTOPage;
     }
 
 

@@ -10,6 +10,7 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
@@ -38,8 +39,8 @@ public class ClienteController {
 
     @Operation(summary = "Listar todos os clientes")
     @GetMapping("/{uuidEmpresa}")
-        public ResponseEntity<List<ClienteDTO>> getAll(@PathVariable UUID uuidEmpresa, Pageable pageable){
-        List<ClienteDTO> clienteDTOS = this.clienteService.pageable(uuidEmpresa, pageable);
+        public ResponseEntity<Page<ClienteDTO>> getAll(@PathVariable UUID uuidEmpresa, Pageable pageable){
+        Page<ClienteDTO> clienteDTOS = this.clienteService.pageable(uuidEmpresa, pageable);
         return  ResponseEntity.status(HttpStatus.OK).body(clienteDTOS);
     }
 
